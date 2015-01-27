@@ -29,7 +29,7 @@ suite.addBatch({
             var app = express(),
                 callback = this.callback;
             app.get("/.well-known/host-meta", function(req, res) {
-                res.send(404, 'No such resource');
+                res.status(404).send('No such resource');
             });
             app.on("error", function(err) {
                 callback(err, null);

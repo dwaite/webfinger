@@ -27,7 +27,7 @@
 
     "devDependencies": {
         "vows": "0.7.x",
-        "express": "3.0.x"
+        "express": "^4.11.1"
     },
 
     "dependencies": {
@@ -46,5 +46,5 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     ]
-
 }
+
