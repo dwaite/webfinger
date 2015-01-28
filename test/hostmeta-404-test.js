@@ -20,8 +20,8 @@ var assert = require("assert"),
     vows = require("vows"),
     express = require("express"),
     wf = require("../lib/webfinger");
-
 var suite = vows.describe("Test missing hostmeta endpoint");
+var server;
 
 suite.addBatch({
     "When we run an HTTP app that does not support host-meta": {
@@ -34,19 +34,19 @@ suite.addBatch({
             app.on("error", function(err) {
                 callback(err, null);
             });
-            app.listen(80, function() {
+            server = app.listen(80, function() {
                 callback(null, app);
             });
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
-        teardown: function(app) {
-            if (app && app.close) {
-                app.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
         },
-        "and we get its host-meta data": {
+        "and we get its host-meta data": {          
             topic: function() {
                 var callback = this.callback;
                 wf.hostmeta("localhost", function(err, jrd) {

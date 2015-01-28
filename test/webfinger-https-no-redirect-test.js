@@ -28,6 +28,7 @@ var Step = require("step"),
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 var suite = vows.describe("Webfinger should not redirect to HTTP");
+var sslServer, server;
 
 suite.addBatch({
     "When we run an HTTPS app that redirects to HTTP for Webfinger": {
@@ -70,8 +71,8 @@ suite.addBatch({
             
             Step(
                 function() {
-                    https.createServer(opts, sapp).listen(443, this.parallel());
-                    app.listen(80, this.parallel());
+                    sslServer = https.createServer(opts, sapp).listen(443, this.parallel());
+                    server = app.listen(80, this.parallel());
                 },
                 function(err) {
                     callback(null, app, sapp);
@@ -83,12 +84,12 @@ suite.addBatch({
             assert.isFunction(app);
             assert.isFunction(sapp);
         },
-        teardown: function(app, sapp) {
-            if (app && app.close) {
-                app.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
-            if (sapp && sapp.close) {
-                sapp.close();
+            if (sslServer && sslServer.close) {
+                sslServer.close();
             }
         },
         "and we get a Webfinger": {

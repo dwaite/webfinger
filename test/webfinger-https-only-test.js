@@ -24,6 +24,7 @@ var assert = require("assert"),
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 var suite = vows.describe("webfinger httpsOnly flag causes error");
+var server;
 
 suite.addBatch({
     "When we run an HTTP app that just supports host-meta with XRD": {
@@ -67,16 +68,16 @@ suite.addBatch({
             app.on("error", function(err) {
                 callback(err, null);
             });
-            app.listen(80, function() {
+            server = app.listen(80, function() {
                 callback(null, app);
             });
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
-        teardown: function(app) {
-            if (app && app.close) {
-                app.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
         },
         "and we get a webfinger with https-only flag set": {

@@ -27,6 +27,8 @@ var Step = require("step"),
     path = require("path");
 
 var suite = vows.describe("RFC6415 (host-meta) interface");
+var server;
+var sslServer;
 
 suite.addBatch({
     "When we run an HTTPS app that just redirects to the HTTP home page": {
@@ -68,8 +70,8 @@ suite.addBatch({
 
             Step(
                 function() {
-                    https.createServer(opts, sapp).listen(443, this.parallel());
-                    http.createServer(app).listen(80, this.parallel());
+                    sslServer = https.createServer(opts, sapp).listen(443, this.parallel());
+                    server = http.createServer(app).listen(80, this.parallel());
                 },
                 function() {
                     callback(null, app, sapp);
@@ -79,12 +81,12 @@ suite.addBatch({
         "it works": function(err, app) {
             assert.ifError(err);
         },
-        teardown: function(app, sapp) {
-            if (app && app.close) {
-                app.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
-            if (sapp && sapp.close) {
-                sapp.close();
+            if (sslServer && sslServer.close) {
+                sslServer.close();
             }
         },
         "and we get its host-meta data": {

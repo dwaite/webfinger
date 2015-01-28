@@ -28,6 +28,7 @@ var Step = require("step"),
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 var suite = vows.describe("webfinger httpsOnly flag disallows redirect to HTTP-only LRDD");
+var server, sslServer;
 
 suite.addBatch({
     "When we run an HTTPS app that uses an HTTP app for LRDD": {
@@ -83,8 +84,8 @@ suite.addBatch({
                     var opts = {key: fs.readFileSync(path.join(__dirname, "data", "localhost.key")),
                                 cert: fs.readFileSync(path.join(__dirname, "data", "localhost.crt"))};
 
-                    https.createServer(opts, hm).listen(443, this.parallel());
-                    lrdd.listen(80, this.parallel());
+                    sslServer = https.createServer(opts, hm).listen(443, this.parallel());
+                    server = lrdd.listen(80, this.parallel());
                 },
                 function(err) {
                     callback(null, hm, lrdd);
@@ -96,12 +97,12 @@ suite.addBatch({
             assert.isFunction(hm);
             assert.isFunction(lrdd);
         },
-        teardown: function(hm, lrdd) {
-            if (hm && hm.close) {
-                hm.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
-            if (lrdd && lrdd.close) {
-                lrdd.close();
+            if (sslServer && sslServer.close) {
+                sslServer.close();
             }
         },
         "and we get a webfinger with https-only flag set": {

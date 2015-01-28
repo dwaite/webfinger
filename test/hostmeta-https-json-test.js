@@ -25,6 +25,7 @@ var assert = require("assert"),
     path = require("path");
 
 var suite = vows.describe("RFC6415 (host-meta) interface");
+var server;
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -54,16 +55,16 @@ suite.addBatch({
             opts = {key: fs.readFileSync(path.join(__dirname, "data", "localhost.key")),
                     cert: fs.readFileSync(path.join(__dirname, "data", "localhost.crt"))};
 
-            https.createServer(opts, app).listen(443, function() {
+            server = https.createServer(opts, app).listen(443, function() {
                 callback(null, app);
             });
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
-        teardown: function(app) {
-            if (app && app.close) {
-                app.close();
+        teardown: function() {
+            if (server && server.close) {
+                server.close();
             }
         },
         "and we get its host-meta data": {
