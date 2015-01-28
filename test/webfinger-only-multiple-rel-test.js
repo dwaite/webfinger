@@ -74,7 +74,7 @@ suite.addBatch({
                     }
                 }
 
-                res.json(result);
+                res.type("application/jrd+json").send(result);
             });
 
             app.on("error", function(err) {

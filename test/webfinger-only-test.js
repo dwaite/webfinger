@@ -46,7 +46,7 @@ suite.addBatch({
                     username = username.substr(5);
                 }
 
-                res.json({
+                res.type("application/jrd+json").send({
                     subject: uri,
                     links: [
                         {

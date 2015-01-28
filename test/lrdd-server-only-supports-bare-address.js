@@ -48,7 +48,7 @@ suite.addBatch({
                     hostname = parts[1];
 
                 if (username.substr(0, 5) == "acct:") {
-                    res.send(404, "Unrecognized object type\n");
+                    res.status(404).send("Unrecognized object type\n");
                     return;
                 }
 

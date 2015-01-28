@@ -39,7 +39,7 @@ suite.addBatch({
             app.get("/.well-known/webfinger", function(req, res) {
                 var uri = req.query.resource;
 
-                res.json({
+                res.type("application/jrd+json").send({
                     subject: uri,
                     links: [
                         {

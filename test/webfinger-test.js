@@ -34,12 +34,11 @@ suite.addBatch({
             app.use(express.query());
 
             app.get("/.well-known/host-meta", function(req, res) {
-                res.status(200);
-                res.set("Content-Type", "application/xrd+xml");
-                res.end("<?xml version='1.0' encoding='UTF-8'?>\n"+
-                        "<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>\n" +
-                        "<Link rel='lrdd' type='application/xrd+xml' template='http://localhost/lrdd?uri={uri}' />"+
-                        "</XRD>");
+              res.status(200).type("application/xrd+xml").send(
+                "<?xml version='1.0' encoding='UTF-8'?>\n"+
+                "<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>\n" +
+                "<Link rel='lrdd' type='application/xrd+xml' template='http://localhost/lrdd?uri={uri}' />"+
+                "</XRD>");
             });
             app.get("/lrdd", function(req, res) {
                 var uri = req.query.uri,
@@ -51,13 +50,12 @@ suite.addBatch({
                     username = username.substr(5);
                 }
 
-                res.status(200);
-                res.set("Content-Type", "application/xrd+xml");
-                res.end("<?xml version='1.0' encoding='UTF-8'?>\n"+
-                        "<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>\n" +
-                        "<Subject>"+uri+"</Subject>"+
-                        "<Link rel='profile' href='http://localhost/profile/"+username+"' />"+
-                        "</XRD>");
+                res.status(200).type("application/xrd+xml").send(
+                  "<?xml version='1.0' encoding='UTF-8'?>\n"+
+                  "<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>\n" +
+                  "<Subject>"+uri+"</Subject>"+
+                  "<Link rel='profile' href='http://localhost/profile/"+username+"' />"+
+                  "</XRD>");
             });
             app.on("error", function(err) {
                 callback(err, null);

@@ -50,7 +50,7 @@ suite.addBatch({
             hm2.use(express.query());
 
             hm2.get("/.well-known/host-meta.json", function(req, res) {
-                res.json({
+                res.type("application/jrd+json").send({
                     links: [
                         {
                             rel: "lrdd",
